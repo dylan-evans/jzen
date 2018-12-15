@@ -4,63 +4,6 @@
 
 #include "jzen.h"
 
-
-#define STD_CREATE(NAME) jzen ## NAME  *jzen ## NAME  ## _create() \
-    { \
-        jzen ## NAME *item = (jzen ## NAME  *)malloc(sizeof(jzen ## NAME  )); \
-        if (item) bzero(item, sizeof(jzen ## NAME )); \
-        return item; \
-    }
-
-
-STD_CREATE(Object);
-STD_CREATE(List);
-STD_CREATE(Number);
-STD_CREATE(Boolean);
-STD_CREATE(Null);
-/* It broke all my fingers to bits */
-
-
-jzenString *jzenString_create()
-{
-    jzenString *str = (jzenString*)malloc(sizeof(jzenString));
-    str->value = malloc(sizeof(wchar_t) * JZEN_BLOCK_SIZE);
-    str->length = 0;
-    str->capacity = JZEN_BLOCK_SIZE;
-    return str;
-}
-
-
-void jzenObject_destroy(jzenObject *obj)
-{
-    free(obj);
-}
-
-void jzenList_destroy(jzenList *lst)
-{
-    free(lst);
-}
-
-void jzenString_destroy(jzenString *str)
-{
-    free(str);
-}
-
-void jzenNumber_destroy(jzenNumber *num)
-{
-    free(num);
-}
-
-void jzenBoolean_destroy(jzenBoolean *bill)
-{
-    free(bill);
-}
-
-void jzenNull_destroy(jzenNull *nelly)
-{
-    free(nelly);
-}
-
 void jzenParser_error(jzenParser *parser, wchar_t *message)
 {
     if (message) {
@@ -69,6 +12,13 @@ void jzenParser_error(jzenParser *parser, wchar_t *message)
         parser->error_message = L"Unspecified error";
     }
 }
+
+jzenNumber *jzenParser_parseNumber(jzenParser *parser)
+{
+    return NULL;
+}
+
+
 
 bool jzenParser_running(jzenParser *parser)
 {
@@ -234,71 +184,10 @@ jzenList *jzenParser_parseList(jzenParser *parser)
     }
 }
 
-jzenNumber *jzenParser_parseNumber(jzenParser *parser)
-{
-    return NULL;
-}
-
 void jzenParser_pushToken(jzenParser *parser, wchar_t token)
 {
     
 }
 
 
-
-jzenObject *jzenItem_getObject(jzenItem *item)
-{
-    if (item->type == JZEN_T_OBJECT) {
-        return (jzenObject*)item;
-    }
-    return NULL;
-}
-
-jzenList   *jzenItem_getList(jzenItem *item)
-{
-    if (item->type == JZEN_T_LIST) {
-        return (jzenList*)item;
-    }
-    return NULL;
-}
-
-jzenNumber *jzenItem_getNumber(jzenItem *item)
-{
-    if (item->type == JZEN_T_NUMBER) {
-        return (jzenNumber*)item;
-    }
-    return NULL;
-}
-
-jzenString *jzenItem_getString(jzenItem *item)
-{
-    if (item->type == JZEN_T_STRING) {
-        return (jzenString*)item;
-    }
-    return NULL;
-}
-
-void jzenString_appendOne(jzenString *str, wchar_t token)
-{
-    if (str->capacity <= (str->length + 1)) {
-        str->capacity += JZEN_BLOCK_SIZE;
-        str->value = realloc(str->value, str->capacity);
-    }
-    str->value[str->length] = token;
-    str->length++;
-}
-
-void jzenString_append(jzenString *str, wchar_t *tokens)
-{
-    wchar_t *cur;
-    for (cur=tokens; *cur; cur++) {
-        jzenString_appendOne(str, *cur);
-    }
-}
-
-
-void jzenObject_addItem(jzenObject *obj, jzenString *key, jzenItem *val)
-{
-
-}
 
